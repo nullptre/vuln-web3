@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import requests
 from flask_sqlalchemy import SQLAlchemy
 import sqlite3
+import subprocess
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
@@ -68,6 +69,19 @@ def search_users():
         conn.close()
         return render_template('users.html', users=users, query=query)
     return render_template('users.html', users=[], query='')
+
+@app.route('/ping')
+def ping_host():
+    host = request.args.get('host', '')
+    if host:
+        try:
+            # Vulnerable command execution - susceptible to command injection
+            command = f"ping -c 4 {host}"
+            result = subprocess.check_output(command, shell=True, text=True)
+            return render_template('ping.html', result=result)
+        except subprocess.CalledProcessError as e:
+            return render_template('ping.html', result=f"Error: {str(e)}")
+    return render_template('ping.html')
 
 if __name__ == '__main__':
     init_db()  # Initialize database on startup

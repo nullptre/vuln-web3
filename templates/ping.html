@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Diagnostic - XSS Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .ping-form {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            width: 300px;
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .warning {
+            color: #ff0000;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link">← Back to Main Page</a>
+    <h1>Network Diagnostic</h1>
+
+    <div class="warning">
+        WARNING: This page is vulnerable to Command Injection. Do not use in production!
+    </div>
+
+    <div class="ping-form">
+        <h2>Ping Test</h2>
+        <form action="/ping" method="GET">
+            <input type="text" name="host" placeholder="Enter hostname or IP address">
+            <input type="submit" value="Ping">
+        </form>
+    </div>
+
+    {% if result %}
+    <div class="result">
+        <strong>Command Output:</strong><br>
+        {{ result }}
+    </div>
+    {% endif %}
+</body>
+</html> 
