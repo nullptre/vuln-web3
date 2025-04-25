@@ -30,7 +30,7 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
-        .comments-link, .fetch-link {
+        .comments-link, .fetch-link, .users-link {
             display: inline-block;
             margin-top: 20px;
             padding: 8px 16px;
@@ -40,7 +40,7 @@
             border-radius: 3px;
             margin-right: 10px;
         }
-        .comments-link:hover, .fetch-link:hover {
+        .comments-link:hover, .fetch-link:hover, .users-link:hover {
             background-color: #1976D2;
         }
         .links-container {
@@ -70,6 +70,7 @@
     <div class="links-container">
         <a href="/comments" class="comments-link">View Comments</a>
         <a href="/fetch?url=http://www.vulnweb.com/" class="fetch-link">Test SSRF (vulnweb.com)</a>
+        <a href="/users" class="users-link">User Search (SQL Injection)</a>
     </div>
 </body>
 </html> 

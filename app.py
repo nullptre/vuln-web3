@@ -1,8 +1,28 @@
 from flask import Flask, render_template, request, redirect, url_for
 import requests
+from flask_sqlalchemy import SQLAlchemy
+import sqlite3
 
 app = Flask(__name__)
-comments = []  # In-memory storage for comments
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# In-memory storage for comments
+comments = []
+
+# Initialize database and create some test users
+def init_db():
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS users
+                 (id INTEGER PRIMARY KEY, username TEXT, password TEXT)''')
+    # Add some test users
+    c.execute("INSERT OR IGNORE INTO users (username, password) VALUES ('admin', 'admin123')")
+    c.execute("INSERT OR IGNORE INTO users (username, password) VALUES ('user1', 'password1')")
+    c.execute("INSERT OR IGNORE INTO users (username, password) VALUES ('user2', 'password2')")
+    conn.commit()
+    conn.close()
 
 @app.route('/')
 def index():
@@ -35,5 +55,20 @@ def fetch_url():
             return f"Error fetching URL: {str(e)}"
     return "Please provide a URL parameter"
 
+@app.route('/users')
+def search_users():
+    username = request.args.get('username', '')
+    if username:
+        # Vulnerable SQL query - susceptible to SQL injection
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+        query = f"SELECT * FROM users WHERE username = '{username}'"
+        c.execute(query)
+        users = c.fetchall()
+        conn.close()
+        return render_template('users.html', users=users, query=query)
+    return render_template('users.html', users=[], query='')
+
 if __name__ == '__main__':
+    init_db()  # Initialize database on startup
     app.run(debug=True, port=8070) 
