@@ -11,10 +11,14 @@
         }
         .search-form {
             margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         input[type="text"] {
             padding: 8px;
             width: 300px;
+            margin-bottom: 10px;
         }
         input[type="submit"] {
             padding: 8px 16px;
@@ -26,15 +30,31 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+        .comments-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 16px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        .comments-link:hover {
+            background-color: #1976D2;
+        }
     </style>
 </head>
 <body>
-    <h1>Search Demo</h1>
+    <h1>XSS Demo</h1>
+    
     <div class="search-form">
+        <h2>Search</h2>
         <form action="/search" method="GET">
             <input type="text" name="search" placeholder="Enter your search query">
             <input type="submit" value="Search">
         </form>
     </div>
+
+    <a href="/comments" class="comments-link">View Comments</a>
 </body>
 </html> 
