@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+import requests
 
 app = Flask(__name__)
 comments = []  # In-memory storage for comments
@@ -22,6 +23,17 @@ def add_comment():
     if comment:
         comments.append(comment)
     return redirect(url_for('show_comments'))
+
+@app.route('/fetch')
+def fetch_url():
+    url = request.args.get('url', '')
+    if url:
+        try:
+            response = requests.get(url)
+            return f"Content from {url}:<br><pre>{response.text}</pre>"
+        except Exception as e:
+            return f"Error fetching URL: {str(e)}"
+    return "Please provide a URL parameter"
 
 if __name__ == '__main__':
     app.run(debug=True, port=8070) 
