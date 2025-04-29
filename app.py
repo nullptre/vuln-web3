@@ -3,11 +3,37 @@ import requests
 from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 import subprocess
+from flask_talisman import Talisman
+
+# Feature flag for CSP
+ENABLE_CSP = True
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Configure CSP
+csp = {
+    'default-src': "'self'",
+    'script-src': "'self'",  # Blocks inline scripts
+    'style-src': "'self'",
+    'img-src': "'self'",
+    'object-src': "'none'",
+    'base-uri': "'self'",
+    'form-action': "'self'",
+    'frame-ancestors': "'none'",
+    'block-all-mixed-content': ""  # Empty string instead of True
+}
+
+# Initialize Talisman with CSP only if feature flag is enabled
+if ENABLE_CSP:
+    talisman = Talisman(
+        app,
+        content_security_policy=csp,
+        content_security_policy_nonce_in=['script-src'],
+        force_https=False  # For local development
+    )
 
 # In-memory storage for comments
 comments = []
